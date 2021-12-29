@@ -1,0 +1,8 @@
+{
+  "name": "kububu",
+  "version": "1.0.0",
+  "description": "caldav frontend",
+  "author": "Tobias Bengfort <tobias.bengfort@posteo.de>",
+  "license": "MIT",
+  "dependencies": {}
+}
