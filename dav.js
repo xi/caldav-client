@@ -1,3 +1,20 @@
+var networkIndicator = document.querySelector('.network-indicator');
+var activeRequests = 0;
+
+var _fetch = function(url, options) {
+    activeRequests += 1;
+    networkIndicator.hidden = false;
+
+    var p = fetch(url, options);
+
+    p.finally(() => {
+        activeRequests -= 1;
+        networkIndicator.hidden = activeRequests === 0;
+    });
+
+    return p;
+};
+
 var uuid = function() {
     if (crypto.randomUUID) {
         return crypto.randomUUID();
@@ -38,7 +55,7 @@ var formatDate = function(date) {
 };
 
 export var getCalendars = function(url) {
-    return fetch(url, {
+    return _fetch(url, {
         method: 'PROPFIND',
         credentials: 'same-origin',
         body: '<?xml version="1.0" encoding="utf-8"?>\n'
@@ -73,7 +90,7 @@ export var getCalendars = function(url) {
 };
 
 export var getEvents = function(href, info) {
-    return fetch(href, {
+    return _fetch(href, {
         method: 'REPORT',
         credentials: 'same-origin',
         headers: {depth: '1'},
@@ -159,7 +176,7 @@ export var commitEvent = function(data) {
     vevent.summary = data.title;
     vevent.startDate = date2idate(data.start, data.allDay, data.extendedProps.offset);
     vevent.endDate = date2idate(data.end || data.start, data.allDay, data.extendedProps.offset);
-    return fetch(data.groupId, {
+    return _fetch(data.groupId, {
         method: 'PUT',
         credentials: 'same-origin',
         body: comp.toString(),
@@ -167,7 +184,7 @@ export var commitEvent = function(data) {
 };
 
 export var deleteEvent = function(data) {
-    return fetch(data.groupId, {
+    return _fetch(data.groupId, {
         method: 'DELETE',
         credentials: 'same-origin',
     });

@@ -33,3 +33,19 @@ body {
     display: block;
     width: 100%;
 }
+
+.network-indicator {
+    position: fixed;
+    bottom: 0.5em;
+    left: 0.5em;
+    width: 1em;
+    height: 1em;
+    border: 0.3em solid;
+    border-bottom-color: transparent;
+    border-radius: 50%;
+    animation: progress 1s infinite linear;
+}
+@keyframes progress {
+    0% { transform: rotate(0deg) }
+    100% { transform: rotate(360deg) }
+}
