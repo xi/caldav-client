@@ -24,13 +24,40 @@ calendar.render();
 
 dav.getCalendars(config.rootUrl).then(calendars => {
     calendars.forEach(cal => {
-        calendar.addEventSource({
-            id: cal.href,
-            color: cal.color,
-            editable: true,
-            events: function(info, success, error) {
-                dav.getEvents(cal.href, info).then(success, error);
-            },
+        var source = null;
+
+        var el = document.createElement('label');
+        var checkbox = document.createElement('input');
+        var circle = document.createElement('span');
+        checkbox.type = 'checkbox';
+        checkbox.checked = true;
+        circle.className = 'fc-daygrid-event-dot';
+        circle.style.borderColor = cal.color;
+        el.append(checkbox);
+        el.append(circle);
+        el.append(cal.name);
+        document.querySelector('.calendars').append(el);
+
+        var addSource = function() {
+            source = calendar.addEventSource({
+                id: cal.href,
+                color: cal.color,
+                editable: true,
+                events: function(info, success, error) {
+                    dav.getEvents(cal.href, info).then(success, error);
+                },
+            });
+        };
+
+        checkbox.addEventListener('change', function() {
+            if (source && !checkbox.checked) {
+                source.remove();
+                source = null;
+            } else if (!source && checkbox.checked) {
+                addSource();
+            }
         });
+
+        addSource();
     });
 });
