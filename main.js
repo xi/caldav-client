@@ -76,6 +76,25 @@ var calendar = new FullCalendar.Calendar(
         nowIndicator: true,
         weekNumberCalculation: 'ISO',
         eventClick: info => openForm(info.event),
+        dateClick: (function() {
+            var timeout = null;
+            return info => {
+                closeForm();
+                if (timeout) {
+                    var source = calendar.getEventSources()[0];
+                    var data = calendar.addEvent(dav.createEvent(info, source), source);
+                    dav.commitEvent(data);
+                    openForm(data);
+
+                    clearTimeout(timeout);
+                    timeout = null;
+                } else {
+                    timeout = setTimeout(() => {
+                        timeout = null;
+                    }, 500);
+                }
+            };
+        })(),
         eventDrop: info => dav.commitEvent(info.event),
         eventResize: info => dav.commitEvent(info.event),
         height: '100%',
