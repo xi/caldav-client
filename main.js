@@ -4,6 +4,25 @@ import * as dav from './dav.js';
 var selectedEvent = null;
 var form = document.querySelector('form');
 
+var translations = {
+    'de': {
+        'Title': 'Titel',
+        'All day': 'Ganzer Tag',
+        'Start': 'Anfang',
+        'End': 'Ende',
+        'Calendar': 'Kalender',
+        'Save': 'Speichern',
+        'Delete': 'Löschen',
+        'Cancel': 'Abbrechen',
+        'Are you sure you want to delete this?': 'Bist du sicher dass du das löschen willst?',
+    },
+};
+
+var _ = function(s) {
+    var lang = translations[navigator.language] || {};
+    return lang[s] || s;
+};
+
 var openForm = function(event) {
     form.reset();
     form.title.value = event.title;
@@ -25,11 +44,15 @@ var closeForm = function() {
     calendar.render();
 };
 
+form.querySelectorAll('[data-translate]').forEach(el => {
+    el.textContent = _(el.textContent);
+});
+
 form.addEventListener('submit', function(e) {
     e.preventDefault();
 
     if (e.submitter.value === 'delete') {
-        if (!confirm('Are you sure you want to delete this?')) {
+        if (!confirm(_('Are you sure you want to delete this?'))) {
             return;
         }
         calendar.getEvents()
