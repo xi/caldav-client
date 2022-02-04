@@ -4,5 +4,7 @@
   "description": "caldav frontend",
   "author": "Tobias Bengfort <tobias.bengfort@posteo.de>",
   "license": "MIT",
-  "dependencies": {}
+  "dependencies": {
+    "fullcalendar-scheduler": "^5.10.1"
+  }
 }
