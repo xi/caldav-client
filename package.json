@@ -5,6 +5,7 @@
   "author": "Tobias Bengfort <tobias.bengfort@posteo.de>",
   "license": "MIT",
   "dependencies": {
-    "fullcalendar-scheduler": "^5.10.1"
+    "fullcalendar-scheduler": "^5.10.1",
+    "ical.js": "^1.4.0"
   }
 }
