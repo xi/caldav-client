@@ -22,3 +22,14 @@ body {
 .calendars .fc-daygrid-event-dot {
     display: inline-block;
 }
+
+.form label {
+    display: block;
+    margin-bottom: 0.8em;
+}
+.form input:not([type="checkbox"]),
+.form select {
+    box-sizing: border-box;
+    display: block;
+    width: 100%;
+}

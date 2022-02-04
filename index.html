@@ -10,6 +10,31 @@
 <body>
     <div class="calendars"></div>
     <div class="calendar"></div>
+    <form class="form" hidden>
+        <label>
+            <span data-translate>Title</span>
+            <input type="text" name="title" required>
+        </label>
+        <label>
+            <input type="checkbox" name="allday">
+            <span data-translate>All day</span>
+        </label>
+        <label>
+            <span data-translate>Start</span>
+            <input type="datetime-local" name="start" required>
+        </label>
+        <label>
+            <span data-translate>End</span>
+            <input type="datetime-local" name="end">
+        </label>
+        <label>
+            <span data-translate>Calendar</span>
+            <select name="calendar" required></select>
+        </label>
+        <button name="button" value="save" data-translate>Save</button>
+        <button name="button" value="delete" data-translate>Delete</button>
+        <button name="button" value="cancel" data-translate>Cancel</button>
+    </form>
 
     <script src="node_modules/fullcalendar-scheduler/main.js"></script>
     <script src="node_modules/fullcalendar-scheduler/locales/de.js"></script>
