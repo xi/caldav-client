@@ -138,13 +138,19 @@ dav.getCalendars(config.rootUrl).then(calendars => {
         var el = document.createElement('label');
         var checkbox = document.createElement('input');
         var circle = document.createElement('span');
+        var link = document.createElement('a');
         checkbox.type = 'checkbox';
         checkbox.checked = true;
         circle.className = 'fc-daygrid-event-dot';
         circle.style.borderColor = cal.color;
+        link.href = cal.href;
+        link.className = 'no-link';
+        link.textContent = '🔗';
         el.append(checkbox);
         el.append(circle);
         el.append(cal.name);
+        el.append(' ');
+        el.append(link);
         document.querySelector('.calendars').append(el);
 
         var option = document.createElement('option');
