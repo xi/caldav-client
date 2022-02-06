@@ -1,7 +1,7 @@
 This is a standalone CalDAV web client. It is based on [fullcalendar][0] and
 [ical.js][1] and inspired by [CalDavZAP][2].
 
-# installation
+# Installation
 
 Run `npm install` and then copy everything (including the `node_modules`
 folder) to a server. You also need to set `rootUrl` in config.js to the URL of
@@ -11,7 +11,18 @@ origin.
 Note that this is only a client. You will also need a CalDAV server, e.g.
 [baikal][3] or [radicale][4].
 
-# architecture
+# Features / Limitations
+
+-	Supported
+	-	Displaying events in a calendar, including recurrence
+	-	Creating and deleting events
+	-	Changing the start and end of an event, either by dragging the event on the
+		calendar or by using a form
+	-	Moving an event from one calendar to another
+-	Not supported
+	-	Editing any other property of events, e.g. recurrence or alarms
+
+# Architecture
 
 We have to work with two different structures: The one defined by CalDAV and
 the other one defined by fullcalendar.
