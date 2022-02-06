@@ -154,7 +154,7 @@ export var getEvents = function(href, info) {
 export var createEvent = function(info, source) {
     var comp = new ICAL.Component(['vcalendar', [], []]);
     var compEvent = new ICAL.Component('vevent');
-    comp.updatePropertyWithValue('prodid', '-//iCal.js Wiki Example');
+    comp.updatePropertyWithValue('prodid', '-//kub-caldav-client');
     comp.addSubcomponent(compEvent);
 
     var vevent = new ICAL.Event(compEvent);
