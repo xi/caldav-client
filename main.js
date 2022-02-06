@@ -118,8 +118,14 @@ var calendar = new FullCalendar.Calendar(
                 }
             };
         })(),
-        eventDrop: info => dav.commitEvent(info.event),
-        eventResize: info => dav.commitEvent(info.event),
+        eventDrop: info => {
+            closeForm();
+            dav.commitEvent(info.event);
+        },
+        eventResize: info => {
+            closeForm();
+            dav.commitEvent(info.event);
+        },
         height: '100%',
         headerToolbar: {
             left: 'timeGridWeek,dayGridMonth',
