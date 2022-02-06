@@ -126,6 +126,9 @@ var calendar = new FullCalendar.Calendar(
             closeForm();
             dav.commitEvent(info.event);
         },
+        eventDidMount: info => {
+            info.el.title = info.event.title;
+        },
         height: '100%',
         headerToolbar: {
             left: 'timeGridWeek,dayGridMonth',
