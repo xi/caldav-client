@@ -56,11 +56,12 @@ form.addEventListener('submit', function(e) {
         if (!confirm(_('Are you sure you want to delete this?'))) {
             return;
         }
-        calendar.getEvents()
-            .filter(rel => rel.groupId === data.groupId)
-            .forEach(rel => rel.remove());
-        dav.deleteEvent(data.groupId);
-        closeForm();
+        dav.deleteEvent(data.groupId).then(() => {
+            calendar.getEvents()
+                .filter(rel => rel.groupId === data.groupId)
+                .forEach(rel => rel.remove());
+            closeForm();
+        });
     } else if (e.submitter.value === 'save') {
         data.setProp('title', form.title.value);
         data.setDates(
