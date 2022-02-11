@@ -59,7 +59,7 @@ form.addEventListener('submit', function(e) {
         calendar.getEvents()
             .filter(rel => rel.groupId === data.groupId)
             .forEach(rel => rel.remove());
-        dav.deleteEvent(data);
+        dav.deleteEvent(data.groupId);
         closeForm();
     } else if (e.submitter.value === 'save') {
         data.setProp('title', form.title.value);
@@ -85,7 +85,7 @@ form.addEventListener('submit', function(e) {
                 });
 
             dav.commitEvent(newData);
-            dav.deleteEvent(data);
+            dav.deleteEvent(data.groupId);
         }
         closeForm();
     } else if (e.submitter.value === 'cancel') {

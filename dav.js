@@ -171,8 +171,8 @@ export var commitEvent = function(data) {
     });
 };
 
-export var deleteEvent = function(data) {
-    return _fetch(data.groupId, {
+export var deleteEvent = function(url) {
+    return _fetch(url, {
         method: 'DELETE',
         credentials: 'same-origin',
     });
