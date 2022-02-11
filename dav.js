@@ -5,7 +5,7 @@ var _fetch = function(url, options) {
     activeRequests += 1;
     networkIndicator.hidden = false;
 
-    var p = fetch(url, options);
+    var p = fetch(url, options).then(r => r.ok ? r : Promise.reject(r));
 
     p.finally(() => {
         activeRequests -= 1;
@@ -66,13 +66,7 @@ export var getCalendars = function(url) {
             + '    <A:calendar-color xmlns:A="http://apple.com/ns/ical/"/>\n'
             + '  </D:prop>\n'
             + '</D:propfind>',
-    }).then(function(response) {
-        if (response.ok) {
-            return response.text();
-        } else {
-            throw response;
-        }
-    }).then(function(xml) {
+    }).then(r => r.text()).then(function(xml) {
         var parser = new DOMParser();
         var dom = parser.parseFromString(xml, 'text/xml');
         var calendars = [];
@@ -109,13 +103,7 @@ export var getEvents = function(href, info) {
             + '    </L:comp-filter>\n'
             + '  </L:filter>\n'
             + '</L:calendar-query>',
-    }).then(function(response) {
-        if (response.ok) {
-            return response.text();
-        } else {
-            throw response;
-        }
-    }).then(function(xml) {
+    }).then(r => r.text()).then(function(xml) {
         var parser = new DOMParser();
         var dom = parser.parseFromString(xml, 'text/xml');
         var events = [];
