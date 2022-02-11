@@ -50,44 +50,55 @@ form.querySelectorAll('[data-translate]').forEach(el => {
 
 form.addEventListener('submit', function(e) {
     e.preventDefault();
+    var data = selectedEvent;  // selectedEvent could be reset in the meantime
 
     if (e.submitter.value === 'delete') {
         if (!confirm(_('Are you sure you want to delete this?'))) {
             return;
         }
-        calendar.getEvents()
-            .filter(rel => rel.groupId === selectedEvent.groupId)
-            .forEach(rel => rel.remove());
-        dav.deleteEvent(selectedEvent);
-    } else if (e.submitter.value === 'save') {
-        selectedEvent.setProp('title', form.title.value);
-        selectedEvent.setDates(
-            form.start.value,
-            form.end.value || null,
-            {allDay: form.allday.checked}
-        );
-
-        if (form.calendar.value == selectedEvent.source.id) {
-            dav.commitEvent(selectedEvent);
-        } else {
-            var newSource = calendar.getEventSourceById(form.calendar.value);
-            var newData;
-
+        dav.deleteEvent(data.groupId).then(() => {
             calendar.getEvents()
-                .filter(rel => rel.groupId === selectedEvent.groupId)
-                .forEach(rel => {
-                    var plain = rel.toPlainObject();
-                    plain.groupId = plain.groupId.replace(selectedEvent.source.id, newSource.id);
-                    rel.remove();
-                    newData = calendar.addEvent(plain, newSource);
-                });
+                .filter(rel => rel.groupId === data.groupId)
+                .forEach(rel => rel.remove());
+            closeForm();
+        });
+    } else if (e.submitter.value === 'save') {
+        var newSource = calendar.getEventSourceById(form.calendar.value);
+        var oldGroupId = data.groupId;
+        var newGroupId = data.groupId.replace(data.source.id, newSource.id);
 
-            dav.commitEvent(newData);
-            dav.deleteEvent(selectedEvent);  // CAREFUL: must be called before selectedEvent is reset
-        }
+        dav.commitEvent(data, {
+            groupId: newGroupId,
+            title: form.title.value,
+            start: new Date(form.start.value),
+            end: form.end.value ? new Date(form.end.value) : null,
+            allDay: form.allday.checked,
+        }).then(() => {
+            if (newGroupId !== oldGroupId) {
+                return dav.deleteEvent(oldGroupId);
+            }
+        }).then(() => {
+            data.setProp('title', form.title.value);
+            data.setDates(
+                form.start.value,
+                form.end.value || null,
+                {allDay: form.allday.checked}
+            );
+            if (newGroupId !== oldGroupId) {
+                calendar.getEvents()
+                    .filter(rel => rel.groupId === oldGroupId)
+                    .forEach(rel => {
+                        var plain = rel.toPlainObject();
+                        plain.groupId = newGroupId;
+                        rel.remove();
+                        calendar.addEvent(plain, newSource);
+                    });
+            }
+            closeForm();
+        });
+    } else if (e.submitter.value === 'cancel') {
+        closeForm();
     }
-
-    closeForm();
 });
 
 var calendar = new FullCalendar.Calendar(
@@ -118,11 +129,11 @@ var calendar = new FullCalendar.Calendar(
         })(),
         eventDrop: info => {
             closeForm();
-            dav.commitEvent(info.event);
+            dav.commitEvent(info.event).catch(() => info.revert());
         },
         eventResize: info => {
             closeForm();
-            dav.commitEvent(info.event);
+            dav.commitEvent(info.event).catch(() => info.revert());
         },
         eventDidMount: info => {
             info.el.title = info.event.title;
