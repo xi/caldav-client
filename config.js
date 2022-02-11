@@ -5,7 +5,7 @@ export var calendarOptions = {
     scrollTime: '07:00',
     weekNumberCalculation: 'ISO',
     headerToolbar: {
-        left: 'timeGridWeek,dayGridMonth',
+        left: 'timeGridDay,timeGridWeek,dayGridMonth',
         center: 'title',
         right: 'today prev,next',
     },
