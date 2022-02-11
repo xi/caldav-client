@@ -60,6 +60,7 @@ form.addEventListener('submit', function(e) {
             .filter(rel => rel.groupId === data.groupId)
             .forEach(rel => rel.remove());
         dav.deleteEvent(data);
+        closeForm();
     } else if (e.submitter.value === 'save') {
         data.setProp('title', form.title.value);
         data.setDates(
@@ -86,9 +87,10 @@ form.addEventListener('submit', function(e) {
             dav.commitEvent(newData);
             dav.deleteEvent(data);
         }
+        closeForm();
+    } else if (e.submitter.value === 'cancel') {
+        closeForm();
     }
-
-    closeForm();
 });
 
 var calendar = new FullCalendar.Calendar(
