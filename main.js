@@ -50,40 +50,41 @@ form.querySelectorAll('[data-translate]').forEach(el => {
 
 form.addEventListener('submit', function(e) {
     e.preventDefault();
+    var data = selectedEvent;  // selectedEvent could be reset in the meantime
 
     if (e.submitter.value === 'delete') {
         if (!confirm(_('Are you sure you want to delete this?'))) {
             return;
         }
         calendar.getEvents()
-            .filter(rel => rel.groupId === selectedEvent.groupId)
+            .filter(rel => rel.groupId === data.groupId)
             .forEach(rel => rel.remove());
-        dav.deleteEvent(selectedEvent);
+        dav.deleteEvent(data);
     } else if (e.submitter.value === 'save') {
-        selectedEvent.setProp('title', form.title.value);
-        selectedEvent.setDates(
+        data.setProp('title', form.title.value);
+        data.setDates(
             form.start.value,
             form.end.value || null,
             {allDay: form.allday.checked}
         );
 
-        if (form.calendar.value == selectedEvent.source.id) {
-            dav.commitEvent(selectedEvent);
+        if (form.calendar.value == data.source.id) {
+            dav.commitEvent(data);
         } else {
             var newSource = calendar.getEventSourceById(form.calendar.value);
             var newData;
 
             calendar.getEvents()
-                .filter(rel => rel.groupId === selectedEvent.groupId)
+                .filter(rel => rel.groupId === data.groupId)
                 .forEach(rel => {
                     var plain = rel.toPlainObject();
-                    plain.groupId = plain.groupId.replace(selectedEvent.source.id, newSource.id);
+                    plain.groupId = plain.groupId.replace(data.source.id, newSource.id);
                     rel.remove();
                     newData = calendar.addEvent(plain, newSource);
                 });
 
             dav.commitEvent(newData);
-            dav.deleteEvent(selectedEvent);  // CAREFUL: must be called before selectedEvent is reset
+            dav.deleteEvent(data);
         }
     }
 
