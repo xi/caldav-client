@@ -121,11 +121,11 @@ var calendar = new FullCalendar.Calendar(
         })(),
         eventDrop: info => {
             closeForm();
-            dav.commitEvent(info.event);
+            dav.commitEvent(info.event).catch(() => info.revert());
         },
         eventResize: info => {
             closeForm();
-            dav.commitEvent(info.event);
+            dav.commitEvent(info.event).catch(() => info.revert());
         },
         eventDidMount: info => {
             info.el.title = info.event.title;
