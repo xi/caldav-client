@@ -63,32 +63,39 @@ form.addEventListener('submit', function(e) {
             closeForm();
         });
     } else if (e.submitter.value === 'save') {
-        data.setProp('title', form.title.value);
-        data.setDates(
-            form.start.value,
-            form.end.value || null,
-            {allDay: form.allday.checked}
-        );
+        var newSource = calendar.getEventSourceById(form.calendar.value);
+        var oldGroupId = data.groupId;
+        var newGroupId = data.groupId.replace(data.source.id, newSource.id);
 
-        if (form.calendar.value == data.source.id) {
-            dav.commitEvent(data);
-        } else {
-            var newSource = calendar.getEventSourceById(form.calendar.value);
-            var newData;
-
-            calendar.getEvents()
-                .filter(rel => rel.groupId === data.groupId)
-                .forEach(rel => {
-                    var plain = rel.toPlainObject();
-                    plain.groupId = plain.groupId.replace(data.source.id, newSource.id);
-                    rel.remove();
-                    newData = calendar.addEvent(plain, newSource);
-                });
-
-            dav.commitEvent(newData);
-            dav.deleteEvent(data.groupId);
-        }
-        closeForm();
+        dav.commitEvent(data, {
+            groupId: newGroupId,
+            title: form.title.value,
+            start: new Date(form.start.value),
+            end: form.end.value ? new Date(form.end.value) : null,
+            allDay: form.allday.checked,
+        }).then(() => {
+            if (newGroupId !== oldGroupId) {
+                return dav.deleteEvent(oldGroupId);
+            }
+        }).then(() => {
+            data.setProp('title', form.title.value);
+            data.setDates(
+                form.start.value,
+                form.end.value || null,
+                {allDay: form.allday.checked}
+            );
+            if (newGroupId !== oldGroupId) {
+                calendar.getEvents()
+                    .filter(rel => rel.groupId === oldGroupId)
+                    .forEach(rel => {
+                        var plain = rel.toPlainObject();
+                        plain.groupId = newGroupId;
+                        rel.remove();
+                        calendar.addEvent(plain, newSource);
+                    });
+            }
+            closeForm();
+        });
     } else if (e.submitter.value === 'cancel') {
         closeForm();
     }

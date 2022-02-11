@@ -158,13 +158,22 @@ export var createEvent = function(info, source) {
     };
 };
 
-export var commitEvent = function(data) {
+export var commitEvent = function(data, _changes) {
     var comp = data.extendedProps.comp;
     var vevent = new ICAL.Event(comp.getFirstSubcomponent('vevent'));
-    vevent.summary = data.title;
-    vevent.startDate = date2idate(data.start, data.allDay, data.extendedProps.offset);
-    vevent.endDate = date2idate(data.end || data.start, data.allDay, data.extendedProps.offset);
-    return _fetch(data.groupId, {
+
+    var changes = _changes || {};
+    var groupId = changes.groupId || data.groupId;
+    var title = changes.title || data.title;
+    var start = changes.start || data.start;
+    var end = changes.end || data.end;
+    var allDay = changes.allDay || data.allDay;
+
+    vevent.summary = title;
+    vevent.startDate = date2idate(start, allDay, data.extendedProps.offset);
+    vevent.endDate = date2idate(end || start, allDay, data.extendedProps.offset);
+
+    return _fetch(groupId, {
         method: 'PUT',
         credentials: 'same-origin',
         body: comp.toString(),
