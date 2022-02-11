@@ -92,12 +92,10 @@ form.addEventListener('submit', function(e) {
 
 var calendar = new FullCalendar.Calendar(
     document.querySelector('.calendar'),
-    {
+    Object.assign({
         schedulerLicenseKey: 'GPL-My-Project-Is-Open-Source',
         locale: navigator.language,
-        scrollTime: '07:00',
         nowIndicator: true,
-        weekNumberCalculation: 'ISO',
         eventClick: info => openForm(info.event),
         dateClick: (function() {
             var timeout = null;
@@ -136,7 +134,7 @@ var calendar = new FullCalendar.Calendar(
             right: 'today prev,next',
         },
         initialView: 'timeGridWeek',
-    }
+    }, config.calendarOptions)
 );
 calendar.render();
 
